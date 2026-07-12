@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAFIA - Intelligence Artificielle pour la Performance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gold: #C9A961;
+            --dark-gold: #B8952F;
+            --black: #1a1a1a;
+            --light-gray: #f8f8f8;
+            --border-gray: #e0e0e0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-gray);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            height: 45px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--black);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gold);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-gold);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(201, 169, 97, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            margin-top: 80px;
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-gray) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(201, 169, 97, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--black);
+            line-height: 1.2;
+        }
+
+        .hero-content .highlight {
+            background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.15));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Vision Section */
+        .vision-section {
+            padding: 6rem 5%;
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .vision-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(201, 169, 97, 0.2);
+            color: var(--primary-gold);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border: 1px solid var(--primary-gold);
+        }
+
+        .vision-section h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--primary-gold);
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .vision-section p {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Promise Section */
+        .promise-section {
+            padding: 6rem 5%;
+            background: var(--white);
+        }
+
+        .promise-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: var(--black);
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 4rem;
+        }
+
+        .promise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .promise-card {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 16px;
+            border: 2px solid var(--border-gray);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-gold), var(--dark-gold));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .promise-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        .promise-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .promise-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        .promise-card p {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Solutions Section */
+        .solutions-section {
+            padding: 6rem 5%;
+            background: var(--light-gray);
+        }
+
+        .solutions-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .solution-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-gray);
+            transition: all 0.3s;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-gold);
+        }
+
+        .solution-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .solution-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--black);
+            font-weight: 600;
+        }
+
+        .solution-card p {
+            color: #666;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 6rem 5%;
+            background: var(--white);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 3rem auto 0;
+        }
+
+        .service-card {
+            background: var(--light-gray);
+            padding: 3rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-gray);
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background: var(--white);
+            border-color: var(--primary-gold);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        .service-card p {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Why PAFIA Section */
+        .why-section {
+            padding: 6rem 5%;
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .why-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .why-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(201, 169, 97, 0.3);
+            transition: all 0.3s;
+        }
+
+        .why-card:hover {
+            background: rgba(201, 169, 97, 0.1);
+            border-color: var(--primary-gold);
+            transform: translateY(-5px);
+        }
+
+        .why-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .why-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .why-card p {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
+            text-align: center;
+            color: var(--white);
+        }
+
+        .cta-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .cta-section .cta-button {
+            background: var(--white);
+            color: var(--primary-gold);
+            font-size: 1.1rem;
+            padding: 1rem 3rem;
+        }
+
+        .cta-section .cta-button:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--black);
+            padding: 4rem 5% 2rem;
+            color: var(--white);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 2;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-gold);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Decorative Elements */
+        .gold-line {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-gold), var(--dark-gold));
+            margin: 0 auto 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .promise-grid,
+            .solutions-grid,
+            .services-grid,
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="https://s3.ca-central-1.amazonaws.com/logojoy/logos/205984694/noBgColor.png" alt="PAFIA Logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#accueil">Accueil</a></li>
+            <li><a href="#solutions">Solutions</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a href="#contact" class="cta-button">Réserver une consultation</a>
+    </nav>
+
+    <section class="hero" id="accueil">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Intelligence Artificielle<br>pour la <span class="highlight">Performance</span></h1>
+                <p>Transformez vos données en valeur stratégique, vos processus en automatisation intelligente, et vos décisions en avantages mesurables.</p>
+                <div>
+                    <a href="#solutions" class="cta-button">Découvrir nos solutions</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://s3.ca-central-1.amazonaws.com/logojoy/logos/205984694/noBgColor.png" alt="PAFIA Intelligence Artificielle">
+            </div>
+        </div>
+    </section>
+
+    <section class="vision-section">
+        <div class="vision-content">
+            <span class="section-badge">✨ NOTRE VISION</span>
+            <h2>"Toute donnée bien transformée est de l'Or"</h2>
+            <p>PAFIA est une startup spécialisée en Intelligence Artificielle appliquée au management et au suivi-évaluation de projets. Nous accompagnons les organisations, ONG, entreprises et institutions dans leur transformation digitale.</p>
+        </div>
+    </section>
+
+    <section class="promise-section">
+        <div class="promise-container">
+            <h2 class="section-title">Notre Promesse : Des Résultats Concrets et Mesurables</h2>
+            <div class="gold-line"></div>
+            <div class="promise-grid">
+                <div class="promise-card">
+                    <h3>Projets Plus Performants</h3>
+                    <p>Optimisation continue de la gestion et du pilotage grâce à l'IA pour atteindre vos objectifs avec précision et efficacité.</p>
+                </div>
+                <div class="promise-card">
+                    <h3>Processus Automatisés</h3>
+                    <p>Automatisation intelligente des tâches répétitives pour gagner du temps et garantir la fiabilité de vos opérations.</p>
+                </div>
+                <div class="promise-card">
+                    <h3>Décisions Éclairées</h3>
+                    <p>Analyse avancée de vos données internes pour prendre des décisions stratégiques basées sur des faits, pas sur des intuitions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solutions-section" id="solutions">
+        <div class="solutions-container">
+            <h2 class="section-title">Nos Solutions Clés : Une Suite Complète</h2>
+            <p class="section-subtitle">Des outils sur mesure qui s'intègrent naturellement dans vos processus existants</p>
+            <div class="solutions-grid">
+                <div class="solution-card">
+                    <div class="solution-number">01</div>
+                    <h3>Gestion de Projets Assistée par l'IA</h3>
+                    <p>Système collaboratif intelligent avec gestion automatisée des tâches, suivi des objectifs périodiques, alertes intelligentes et coordination d'équipe optimisée.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-number">02</div>
+                    <h3>Suivi-Évaluation Automatisé</h3>
+                    <p>Dashboards interactifs en temps réel, reporting automatisé mensuel et annuel, et analyse avancée des indicateurs de performance pour un pilotage précis.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-number">03</div>
+                    <h3>Chatbot de Gestion des Connaissances</h3>
+                    <p>Capitalisation intelligente des documents internes, accès rapide à l'information stratégique et support décisionnel permanent pour vos équipes.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-number">04</div>
+                    <h3>Rédaction Semi-Automatisée de Rapports</h3>
+                    <p>Génération automatique de rapports d'activités, narratifs et analytiques, ainsi que de notes de synthèse et recommandations stratégiques.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-number">05</div>
+                    <h3>Aide à la Décision & IA Prédictive</h3>
+                    <p>Modèles d'IA entraînés sur vos propres données pour anticiper risques et opportunités, et valoriser durablement vos bases de données.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services-section" id="services">
+        <div class="promise-container">
+            <h2 class="section-title">Services Complémentaires</h2>
+            <p class="section-subtitle">Au-delà de l'IA : Un accompagnement global</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🎓</div>
+                    <h3>Renforcement de Capacités</h3>
+                    <p>Formations pratiques en Intelligence Artificielle pour staffs, professionnels, étudiants et particuliers. IA appliquée aux projets, entreprises et organisations avec des modules sur mesure.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3>Études & Conseils Stratégiques</h3>
+                    <p>Évaluations et études de projets, rédaction de documents stratégiques : plans stratégiques, business plans, propositions techniques et financières, cadres logiques.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <h3>Vente & Intégration de Matériels</h3>
+                    <p>Fourniture de matériels informatiques et électroniques orientés IA, objets connectés, avec installation professionnelle et service après-vente de qualité.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-section">
+        <div class="why-container">
+            <h2 class="section-title" style="color: var(--white);">Pourquoi Choisir PAFIA ?</h2>
+            <div class="gold-line"></div>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon">👥</div>
+                    <h3>Expertise Terrain & Data</h3>
+                    <p>Une équipe qui combine compétences techniques pointues en IA et compréhension profonde des réalités opérationnelles des projets.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">🎯</div>
+                    <h3>Solutions Sur Mesure</h3>
+                    <p>Chaque organisation est unique. Nos solutions sont conçues spécifiquement pour répondre à vos besoins et s'adapter à votre contexte.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">📈</div>
+                    <h3>Approche Orientée Impact</h3>
+                    <p>Nous ne vendons pas de la technologie, nous délivrons des résultats mesurables et durables qui transforment votre performance.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">🔧</div>
+                    <h3>Technologies Fiables</h3>
+                    <p>Des solutions éprouvées, évolutives et pérennes, avec un accompagnement continu pour garantir votre succès à long terme.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Transformer les Données en Or</h2>
+            <p>Prêt à révolutionner la gestion et le suivi-évaluation de vos projets avec l'Intelligence Artificielle ? PAFIA vous accompagne de l'analyse de vos besoins jusqu'à la mise en œuvre complète de solutions qui génèrent des résultats tangibles.</p>
+            <a href="#contact" class="cta-button">Contactez-nous dès aujourd'hui</a>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>PAFIA</h3>
+                <p>Cabinet spécialisé en Intelligence Artificielle pour le Management et le Suivi-Évaluation de Projets.</p>
+                <p style="margin-top: 1rem; color: var(--primary-gold);">Performance • Automatisation • Fiabilité</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>📞 (221) 76 184 65 64</p>
+                <p>📞 (221) 33 854 84 81</p>
+                <p>✉️ manager@pafia.tech</p>
+                <p>📍 Ouakam, Dakar, Sénégal</p>
+            </div>
+            <div class="footer-section">
+                <h3>Navigation</h3>
+                <a href="#accueil">Accueil</a>
+                <a href="#solutions">Solutions</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h3>Nos Services</h3>
+                <a href="#solutions">Gestion de Projets IA</a>
+                <a href="#solutions">Suivi-Évaluation</a>
+                <a href="#solutions">Chatbot IA</a>
+                <a href="#services">Formation</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 PAFIA. Tous droits réservés. | www.pafia.tech</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.promise-card, .solution-card, .service-card, .why-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
